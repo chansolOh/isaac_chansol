@@ -10,7 +10,7 @@ from pxr import Sdf, Tf, Usd, UsdGeom, UsdShade, Gf, PhysxSchema, UsdPhysics
 import numpy as np
 import carb
 
-import my_rep
+from . import my_rep
 # from omni.isaac.sensor import _sensor
 import os
 
@@ -19,7 +19,7 @@ from omni.physx import get_physx_scene_query_interface
 from omni.physx.scripts.physicsUtils import *
 from isaacsim.core.api.materials.physics_material import PhysicsMaterial
 import omni.isaac.core.utils.rotations as rot_utils
-import cs_rep_utils as csr
+from . import rep_utils as csr
 
 
 

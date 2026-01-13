@@ -24,6 +24,8 @@ from omni.physx.scripts.physicsUtils import *
 # from omni.isaac.core.materials.physics_material import PhysicsMaterial
 import omni.isaac.core.utils.rotations as rot_utils
 from ..general_utils import mat_utils as csu
+from .debug_tools import debug_draw_obb, debug_draw_points, debug_draw_clear
+
 from scipy.spatial.transform import Rotation as R
 from scipy.spatial import KDTree, cKDTree
 import ast
@@ -196,7 +198,7 @@ def gf_mat_to_np(mat:Union[Gf.Matrix4f, Gf.Matrix4d]):
     rot_mat[:,2] /= np.linalg.norm(rot_mat[:,2])
     # rotation = rot_utils.quat_to_euler_angles(rot_utils.rot_matrix_to_quat(rot_mat), degrees=True)
     # rot_utils.quat_to_rot_matrix(rot_utils.euler_angles_to_quat(rotation, degrees=True))
-    return csu.trans(x,y,z).dot(csu.mat_to_tf(rot_mat))
+    return csu.trans(np.array([x,y,z])).dot(csu.mat_to_tf(rot_mat))
     
 
 
@@ -496,23 +498,6 @@ def get_global_points_sampled(target_rep, sample_distance = 0.03):
     target_points_idx = np.random.choice(np.arange(len(target_points)), 50000 if len(target_points)>50000 else len(target_points), replace=False)
     target_points_dist_samples = kd_tree_sampling_xy(target_points[target_points_idx], sample_distance)
     return target_points_dist_samples
-
-def debug_draw_obb(obb):
-    draw = _debug_draw.acquire_debug_draw_interface()
-    draw.draw_lines(
-        [carb.Float3(i) for i in obb[[0,1,2,2,0,4,5,5,7,6,7,6]]] , 
-        [carb.Float3(i) for i in obb[[1,3,3,0,4,5,1,7,6,4,3,2]]] , 
-        [carb.ColorRgba(1.0,0.0,0.0,1.0)]*12,
-        [1]*12 )
-    return draw
-
-def debug_draw_points(points,size = 3, color=[1,0,0]):
-    draw = _debug_draw.acquire_debug_draw_interface()
-    draw.draw_points(
-        [carb.Float3(i) for i in points] , 
-        [carb.ColorRgba(color[0],color[1],color[2],1.0)]*len(points),
-        [size]*len(points) )
-    return draw
 
 
 
