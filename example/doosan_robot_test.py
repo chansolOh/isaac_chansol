@@ -27,9 +27,9 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from isaac_utils_51 import scan_rep, rep_utils
-from general_utils import mat_utils
-from Robot_45 import robot_configs, robot_policy
+from isaac_chansol.isaac_utils_51 import scan_rep, rep_utils
+from isaac_chansol.general_utils import mat_utils
+from isaac_chansol.Robot_45 import robot_configs, robot_policy
 
 
 
@@ -70,7 +70,7 @@ light_2 = prim_utils.create_prim(
     }
 )
 
-Robot_Cfg = robot_configs.ROBOT_CONFIGS["Robotis_OMY"]()
+Robot_Cfg = robot_configs.ROBOT_CONFIGS["Doosan_M1013"]()
 my_robot_task = robot_policy.My_Robot_Task(robot_config=Robot_Cfg, name="robot_task" )
 my_world.add_task(my_robot_task)
 my_world.reset()
@@ -111,9 +111,7 @@ target_xprim = XFormPrim(
 my_world.scene.add(target_xprim)
 
 
-world_base_tf   = rep_utils.gf_mat_to_np( rep_utils.find_parents_tf(stage.GetPrimAtPath(f"{my_robot_task.prim_path}/world_base") , include_self=True)    )
-robot_tf        = rep_utils.gf_mat_to_np( rep_utils.find_parents_tf(stage.GetPrimAtPath(my_robot.prim_path)))
-robot_rot_tf_inv = np.linalg.inv( np.linalg.inv(world_base_tf).dot(robot_tf) )
+
 
 i = 0
 state = 0
@@ -154,20 +152,17 @@ while simulation_app.is_running():
             if ik_first_flag:
                 target_pos, target_orientation = target_xprim.get_world_pose()
                 target_orientation = mat_utils.quat_to_euler(np.array(target_orientation), degrees=True)
-                target_pos = np.linalg.inv(robot_tf).dot( mat_utils.trans(target_pos) )[:3,-1]
 
-                target_orientation = np.linalg.inv(robot_tf).dot( mat_utils.rotate(target_orientation) )
-                target_orientation = mat_utils.mat_to_euler(target_orientation, degrees=True)
+   
 
                 target_joint_positions = my_robot_task.compute_ik_traj(target_position = target_pos,
                                             target_orientation = target_orientation,
-                                            frame_name = "OMY_grasp_joint",
+                                            frame_name = "J6",
                                             warm_start=my_robot.get_joint_positions()[:8]
                                             )
 
                 
-                target_joint_positions = np.hstack((target_joint_positions[:6], 
-                                                    np.array([0,0])))
+
                 ik_first_flag =False
 
                 print(target_pos)
@@ -175,17 +170,16 @@ while simulation_app.is_running():
 
 
             my_robot.apply_action(ArticulationAction(
-                                    joint_indices=[0,1,2,3,4,5,6,7] ,
+                                    joint_indices=[0,1,2,3,4,5] ,
                                   joint_positions = target_joint_positions) )
-            joint_states = my_robot.get_joint_positions()[:8]
-            joint_err = np.abs(joint_states - target_joint_positions)
+
             # if np.mean(joint_err)<joint_err_th:
             #     ik_first_flag = True
                 # state+=1
  
         
 
-        if i >= 300  :
+        if i >= 400  :
             # state+=1
             i=0
             ik_first_flag = True
