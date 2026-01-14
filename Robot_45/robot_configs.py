@@ -67,7 +67,6 @@ def doosan_m1013() -> RobotConfig:
         ee_link_path="Doosan_M1013/J6",
         gripper_joint_prim_names=None,
         joint_num=6,
-
     )
 
 

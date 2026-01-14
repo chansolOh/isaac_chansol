@@ -82,9 +82,9 @@ class My_Robot_Task(tasks.BaseTask):
             manipulator = SingleArticulation(
                 prim_path=self.prim_path,
                 name=self.name,
-                position = self.robot_pos if self.robot_pos is not None else np.array([0,0,0]),
-                orientation = self.robot_ori if self.robot_ori is not None else np.array([1,0,0,0]),
-                scale = self.robot_scale if self.robot_scale is not None else np.array([1,1,1]),
+                position = self.robot_pos,
+                orientation = self.robot_ori,
+                scale = self.robot_scale,
             )
 
         else:
@@ -101,9 +101,9 @@ class My_Robot_Task(tasks.BaseTask):
                 name=self.name,
                 end_effector_prim_path=os.path.join(self.prim_path, self.ee_link_path),
                 gripper=gripper,
-                position = self.robot_pos if self.robot_pos is not None else np.array([0,0,0]),
-                orientation = self.robot_ori if self.robot_ori is not None else np.array([1,0,0,0]),
-                scale = self.robot_scale if self.robot_scale is not None else np.array([1,1,1]),
+                position = self.robot_pos ,
+                orientation = self.robot_ori ,
+                scale = self.robot_scale ,
             )
  
         joints_default_positions = np.zeros(self.joint_num)
@@ -154,13 +154,13 @@ class My_Robot_Task(tasks.BaseTask):
         warm_start : np.ndarray
         ):
 
-        init_pos, init_rot_mat = self.compute_fk(
+        init_pos, init_rot_rad = self.compute_fk(
             frame_name = frame_name,
             joint_positions = warm_start
         )
 
 
-        euler_deg = mat_utils.mat_to_euler(init_rot_mat, degrees=True)
+        euler_deg = init_rot_rad /np.pi*180
 
         ori_over_idx = (euler_deg-target_orientation) >180
         target_orientation[ori_over_idx] +=360
@@ -168,7 +168,7 @@ class My_Robot_Task(tasks.BaseTask):
         target_orientation[ori_under_idx] -=360
 
         dist = np.linalg.norm(target_position - init_pos)
-        step = 0.01  # 1cm
+        step = 0.001  # 1cm
         num = int(np.ceil(dist / step)) + 1
         points = np.linspace(init_pos, target_position, num=num)
         degs = np.linspace(euler_deg, target_orientation, num=num)
@@ -202,7 +202,8 @@ class My_Robot_Task(tasks.BaseTask):
         pos, rot_mat = self.kinematics_solver.compute_forward_kinematics(frame_name =frame_name, joint_positions = joint_positions)
         # print("pos : ", pos)
         # print("rot_mat : ", rot_mat)
-        return pos, rot_mat
+        rot = mat_utils.mat_to_euler(rot_mat)
+        return pos, rot
 
 
     def pre_step(self, current_time_step_index, current_time):
