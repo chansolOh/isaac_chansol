@@ -35,6 +35,15 @@ from .robot_configs import RobotConfig
 from ..general_utils import mat_utils
 
 # Inheriting from the base class Follow Target
+
+def dpi_arr(deg_arr, target_deg_arr):
+    result_arr = target_deg_arr.copy()
+    over_idx = (deg_arr - target_deg_arr) >180
+    result_arr[over_idx] +=360
+    under_idx = (deg_arr - target_deg_arr) <-180
+    result_arr[under_idx] -=360
+    return result_arr
+
 class My_Robot_Task(tasks.BaseTask):
     def __init__(
         self,
@@ -67,6 +76,7 @@ class My_Robot_Task(tasks.BaseTask):
 
         self._robot = self.set_robot()
         self.kinematics_solver = self.set_solver()
+        self.joint_names = self.kinematics_solver.get_joint_names()
         self.robot_prim = self.stage.GetPrimAtPath(self.prim_path)
         
 
@@ -106,7 +116,7 @@ class My_Robot_Task(tasks.BaseTask):
                 scale = self.robot_scale ,
             )
  
-        joints_default_positions = np.zeros(self.joint_num)
+        joints_default_positions = np.zeros(self.total_joint_num)
         manipulator.set_joints_default_state(positions=torch.tensor(joints_default_positions, dtype=torch.float32))
 
         return manipulator
@@ -151,29 +161,29 @@ class My_Robot_Task(tasks.BaseTask):
         target_position : Optional[list],
         target_orientation : Optional[list], 
         frame_name : str ,
-        warm_start : np.ndarray
+        # warm_start : np.ndarray,
+        return_traj: bool = False
         ):
 
-        init_pos, init_rot_rad = self.compute_fk(
+        init_pos, init_rot = self.compute_fk(
             frame_name = frame_name,
-            joint_positions = warm_start
         )
+        warm_start = self.get_joint_positions()
 
+        target_orientation = dpi_arr(init_rot, np.array(target_orientation))
 
-        euler_deg = init_rot_rad /np.pi*180
-
-        ori_over_idx = (euler_deg-target_orientation) >180
-        target_orientation[ori_over_idx] +=360
-        ori_under_idx = (euler_deg - target_orientation) <-180
-        target_orientation[ori_under_idx] -=360
-
-        dist = np.linalg.norm(target_position - init_pos)
-        step = 0.001  # 1cm
-        num = int(np.ceil(dist / step)) + 1
+        pos_dist = np.linalg.norm(target_position - init_pos)
+        pos_step = 0.01  # 1cm
+        pos_num = int(np.ceil(pos_dist / pos_step)) + 1
+        rot_dist = np.linalg.norm(target_orientation - init_rot)
+        rot_step = 1.0  # 1 degree
+        rot_num = int(np.ceil(rot_dist / rot_step)) + 1
+        num = max(pos_num, rot_num)
         points = np.linspace(init_pos, target_position, num=num)
-        degs = np.linspace(euler_deg, target_orientation, num=num)
+        degs = np.linspace(init_rot, target_orientation, num=num)
 
-        warm_list = []
+        # import pdb; pdb.set_trace()
+        joint_position_traj = []
 
         for i in range(num):
             target_position = points[i]
@@ -183,28 +193,33 @@ class My_Robot_Task(tasks.BaseTask):
                 target_orientation = target_orientation,
                 frame_name = frame_name,
                 warm_start = warm_start)
+            joint_positions = dpi_arr(warm_start/np.pi*180, joint_positions/np.pi*180)/180*np.pi
             warm_start = joint_positions
-            warm_list.append(warm_start)
-        # import matplotlib.pyplot as plt
-        # plt.plot(warm_list)
-        # plt.show()
-
+            joint_position_traj.append(joint_positions)
+        import matplotlib.pyplot as plt
+        plt.plot(joint_position_traj)
+        plt.show()
+        if return_traj:
+            return np.array(joint_position_traj)
         
         return joint_positions
 
 
     def compute_fk(self, 
         frame_name:str, 
-        joint_positions : Optional[np.ndarray] 
         ):
+
         if frame_name == None : 
             frame_name = self.kinematics_solver.get_all_frame_names()[7]; print(frame_name)
-        pos, rot_mat = self.kinematics_solver.compute_forward_kinematics(frame_name =frame_name, joint_positions = joint_positions)
-        # print("pos : ", pos)
-        # print("rot_mat : ", rot_mat)
+        pos, rot_mat = self.kinematics_solver.compute_forward_kinematics(frame_name =frame_name, joint_positions = self.get_joint_positions())
+
         rot = mat_utils.mat_to_euler(rot_mat)
         return pos, rot
+    
 
+    
+    def get_joint_positions(self):
+        return self._robot.get_joint_positions()[:len(self.joint_names)]
 
     def pre_step(self, current_time_step_index, current_time):
         return
@@ -212,3 +227,4 @@ class My_Robot_Task(tasks.BaseTask):
     def post_reset(self):
         
         return
+    

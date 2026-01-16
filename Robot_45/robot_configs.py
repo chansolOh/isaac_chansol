@@ -14,7 +14,7 @@ class RobotConfig:
 
     ee_link_path: str
     gripper_joint_prim_names: tuple[str, ...]
-    joint_num: int
+    total_joint_num: int
 
     joint_opened_positions: Optional[np.ndarray] = None
     joint_closed_positions: Optional[np.ndarray] = None
@@ -35,8 +35,8 @@ def robotis_omy_dual_arms() -> RobotConfig:
         description_path="/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom.yaml",
 
         ee_link_path="OMY_custom/OMY/link6",
-        gripper_joint_prim_names=("rh_r1_joint", "rh_l1"),
-        joint_num=10,
+        gripper_joint_prim_names=None,#("rh_r1_joint", "rh_l1"),
+        total_joint_num=10,
         joint_opened_positions=np.array([0.0, 0.0], dtype=np.float32),
         joint_closed_positions=np.array([1.04, 1.04], dtype=np.float32),
     )
@@ -51,7 +51,7 @@ def robotis_omy() -> RobotConfig:
         
         ee_link_path="OMY/link6",
         gripper_joint_prim_names=("rh_r1_joint", "rh_l1"),
-        joint_num=10,
+        total_joint_num=10,
         joint_opened_positions=np.array([0.0, 0.0], dtype=np.float32),
         joint_closed_positions=np.array([1.04, 1.04], dtype=np.float32),
     )
@@ -64,9 +64,8 @@ def doosan_m1013() -> RobotConfig:
         urdf_path="/nas/ochansol/isaac/USD/robots/manipulator/Doosan_M1013/Doosan_M1013_2025/Doosan_M1013_edited.urdf",
         description_path="/nas/ochansol/isaac/USD/robots/manipulator/Doosan_M1013/Doosan_M1013_2025/Doosan_M1013_edited.yaml",
         
-        ee_link_path="Doosan_M1013/J6",
         gripper_joint_prim_names=None,
-        joint_num=6,
+        total_joint_num=6,
     )
 
 
