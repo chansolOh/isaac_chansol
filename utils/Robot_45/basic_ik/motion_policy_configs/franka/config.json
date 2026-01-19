@@ -1,0 +1,16 @@
+{
+    "usd_path" : "/nas/ochansol/isaac/USD/robots/manipulator/Franka_panda/Franka.usd",
+    "gripper_config":{
+        "end_effector_prim_path" : "panda_hand",
+        "joint_prim_names" : ["panda_finger_joint1", "panda_finger_joint2"],
+        "joint_opened_positions": [0.04, 0.04],
+        "joint_closed_positions": [0, 0],
+        "joint_index" : [7, 8]
+    },
+    "manipulator_config":{
+        "urdf_path" : "/nas/ochansol/VLA/python/basic_ik/motion_policy_configs/franka/lula_franka_gen.urdf",
+        "robot_description_path" : "/nas/ochansol/VLA/python/basic_ik/motion_policy_configs/franka/rmpflow/robot_descriptor.yaml",
+        "joint_index" : [0, 1, 2, 3, 4, 5, 6]
+    },
+    "joint_total_num" : 9
+}

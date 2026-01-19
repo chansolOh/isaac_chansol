@@ -1,0 +1,10 @@
+{
+    "end_effector_frame_name": "grasp_point",
+    "maximum_substep_size" : 0.00334,
+    "ignore_robot_state_updates" : false,
+    "relative_asset_paths": {
+        "robot_description_path" : "/nas/ochansol/isaac/sim2real/Robotis_OMY_Robotiq_2f140/Robotis_Robotiq2f140.yaml",
+        "urdf_path": "/nas/ochansol/isaac/sim2real/Robotis_OMY_Robotiq_2f140/Robotis_OMY_Robotiq2f140.urdf",
+        "rmpflow_config_path" : "franka_rmpflow_common.yaml"
+    }
+}
