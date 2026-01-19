@@ -316,8 +316,8 @@ def main(output_root_path,
         # size_rank=2
         # print("size_rank : ", size_rank)
 
-        profile_num = np.random.randint(0,10)
-        samick_box_num = np.random.randint(0,20)
+        profile_num = np.random.randint(1,10)
+        samick_box_num = np.random.randint(1,20)
         sampled_model_dict = {}
         sampled_model_list = []
         for model_attr in model_list:
