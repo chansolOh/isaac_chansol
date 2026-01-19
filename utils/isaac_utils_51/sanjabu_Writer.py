@@ -47,6 +47,7 @@ class SanjabuWriter(BasicWriter):
                  bounding_box_path              = None,
                  camera_params_path             = None,
                  pointcloud_path                = None, 
+                 occlusion_path                 = None,
                  ):
 
         self.output_path = output_path
@@ -60,6 +61,7 @@ class SanjabuWriter(BasicWriter):
         self.bounding_box_path              = bounding_box_path if bounding_box_path is not None else self.bounding_box_path 
         self.camera_params_path             = camera_params_path if camera_params_path is not None else self.camera_params_path
         self.pointcloud_path                = pointcloud_path if pointcloud_path is not None else self.pointcloud_path
+        self.occlusion_path                 = occlusion_path if occlusion_path is not None else self.occlusion_path
     
     
     def set_frame(self, frame_id=0, frame_padding=4):
@@ -260,8 +262,16 @@ class SanjabuWriter(BasicWriter):
         )
         self._backend.schedule(F.write_np, data=pointcloud_instance, path=instance_file_path)
         
- 
-        
+    def _write_occlusion(self, anno_rp_data: dict, output_path: str):
+        cam_dir = self.cam_dir(output_path)
+        file_path = (
+            f"{self.output_path}/{self.occlusion_path}{cam_dir}/{self._sequence_id}{self._frame_id:0{self._frame_padding}}.npy"
+        )
+        self._backend.schedule(F.write_np, data=anno_rp_data["data"], path=file_path)
+
+
+
+
         
         
         

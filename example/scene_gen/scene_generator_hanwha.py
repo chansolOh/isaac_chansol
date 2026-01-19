@@ -1,3 +1,13 @@
+import argparse
+
+argparse = argparse.ArgumentParser()
+argparse.add_argument("--output_root_path", type=str, required=False, default="none")
+argparse.add_argument("--env_name", type=str, required=False, default="none")
+argparse.add_argument("--platform_name", type=str, required=False, default="none")
+argparse.add_argument("--random_condition", type=str, required=False,default="none")
+argparse.add_argument("--scene_start", type=int, required=False, default=0)
+argparse.add_argument("--scene_end", type=int, required=False, default=10)
+# args = argparse.parse_args()
 
 def main(output_root_path,
          env_name,
@@ -100,7 +110,8 @@ def main(output_root_path,
         "semantic_segmentation"         : False,
         "use_common_output_dir"         : True,
         "pointcloud_include_unlabelled" : False,
-        "pointcloud"                    : False
+        "pointcloud"                    : False,
+        "occlusion"                     : False,
     }
 
 
@@ -197,19 +208,8 @@ def main(output_root_path,
 
     writer = rep.WriterRegistry.get("SanjabuWriter")
     writer.initialize(
-        output_dir                      = output_path,
-        rgb                             = writer_dict["rgb"],
-        bounding_box_2d_loose           = writer_dict["bounding_box_2d_loose"],
-        bounding_box_2d_tight           = writer_dict["bounding_box_2d_tight"],
-        bounding_box_3d                 = writer_dict["bounding_box_3d"],
-        distance_to_camera              = writer_dict["distance_to_camera"],
-        distance_to_image_plane         = writer_dict["distance_to_image_plane"],
-        instance_segmentation           = writer_dict["instance_segmentation"],
-        normals                         = writer_dict["normals"],
-        semantic_segmentation           = writer_dict["semantic_segmentation"],
-        use_common_output_dir           = writer_dict["use_common_output_dir"],
-        pointcloud_include_unlabelled   = writer_dict["pointcloud_include_unlabelled"],
-        pointcloud                      = writer_dict["pointcloud"]
+        output_dir=output_path,
+        **writer_dict,
     )
     writer.set_path(output_path,
                     rgb_path = "rgb",
@@ -217,7 +217,8 @@ def main(output_root_path,
                     distance_to_image_plane_path = "depth",
                     instance_segmentation_path = "inst_seg",
                     pointcloud_path = "pointcloud",
-                    normals_path = "normals",)
+                    normals_path = "normals",
+                    occlusion_path = "occlusion",)
     writer.set_cam_name_list([cam_conf1["name"],])# cam_conf2["name"]])
 
     # # Attach render_product to the writer
@@ -531,13 +532,22 @@ def main(output_root_path,
     simulation_app.close()
 
 if __name__ == "__main__":
+    args = argparse.parse_args()
+    output_root_path = args.output_root_path if args.output_root_path!="none" else "/nas/Dataset/Dataset_2026"
+    env_name = args.env_name if args.env_name!="none" else "hanwha"
+    platform_name = args.platform_name if args.platform_name!="none" else "chicken_box"
+    random_condition = args.random_condition.strip("[]").split(",") if args.random_condition!="none" else []
+    scene_start = args.scene_start if args.scene_start!=0 else 0
+    scene_end = args.scene_end if args.scene_end!=10 else scene_start+2000
+    # object_num = args.object_num
+
     main(
         # output_root_path = "/nas/Dataset/Dataset_2025",
-        output_root_path = "/nas/Dataset/Dataset_2026",
-        env_name = "hanwha",
-        platform_name = "chicken_box",
-        random_condition = [],
-        scene_start = 0,
-        scene_end = 10,
+        output_root_path = output_root_path,
+        env_name = env_name,
+        platform_name = platform_name,
+        random_condition = random_condition,
+        scene_start = scene_start,
+        scene_end = scene_end,
         # object_num = 1,
     )
