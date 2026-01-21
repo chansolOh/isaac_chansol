@@ -1,0 +1,9 @@
+string gripper_name
+geometry_msgs/Vector3 position
+geometry_msgs/Vector3 rotation
+float64[6] joint_state
+bool return_traj
+---
+float64[6] joint
+float64[] joint_arr
+int32 joint_arr_num

@@ -46,9 +46,9 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from utils.isaac_utils_51 import scan_rep, rep_utils
-from utils.general_utils import mat_utils
-from utils.Robot_45 import robot_configs, robot_policy
+from Utils.isaac_utils_51 import scan_rep, rep_utils
+from Utils.general_utils import mat_utils
+from Utils.Robot_45 import robot_configs, robot_policy
 
 
 

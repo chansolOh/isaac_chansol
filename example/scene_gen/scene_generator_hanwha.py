@@ -58,8 +58,8 @@ def main(output_root_path,
     if str(PROJECT_ROOT) not in sys.path:
         sys.path.insert(0, str(PROJECT_ROOT))
     # import pdb; pdb.set_trace()
-    from utils.isaac_utils_51 import scan_rep, rep_utils, light_set, sanjabu_Writer
-    from utils.general_utils import mat_utils
+    from Utils.isaac_utils_51 import scan_rep, rep_utils, light_set, sanjabu_Writer
+    from Utils.general_utils import mat_utils
 
 
     ############# set params

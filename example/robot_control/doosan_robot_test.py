@@ -23,13 +23,13 @@ import matplotlib.pyplot as plt
 import sys
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from isaac_chansol.isaac_utils_51 import scan_rep, rep_utils
-from isaac_chansol.general_utils import mat_utils
-from isaac_chansol.Robot_45 import robot_configs, robot_policy
+from Utils.isaac_utils_51 import scan_rep, rep_utils
+from Utils.general_utils import mat_utils
+from Utils.Robot_45 import robot_configs, robot_policy
 
 
 
@@ -105,8 +105,8 @@ target_prim_path = "/World/target_xform2"
 target_xprim = XFormPrim(
     prim_path=target_prim_path,
     name="my_xform2",
-    position=np.array([0.1, 0.0, 2.0]),
-    orientation=np.array([ 1.0, 0.0, 0.0, 0.0]),  # quat (w, x, y, z) 형태가 보통
+    position=np.array([0.158, -0.08, 0.43]),
+    orientation=mat_utils.euler_to_quat(np.array([180.0, 0.0, 0.0]), degrees=True),  # quat (w, x, y, z) 형태가 보통
 )
 my_world.scene.add(target_xprim)
 
@@ -157,8 +157,7 @@ while simulation_app.is_running():
 
                 target_joint_positions = my_robot_task.compute_ik_traj(target_position = target_pos,
                                             target_orientation = target_orientation,
-                                            frame_name = "J6",
-                                            warm_start=my_robot.get_joint_positions()[:8]
+                                            frame_name = "Robotiq_2f140_open",
                                             )
 
                 

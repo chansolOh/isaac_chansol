@@ -196,9 +196,9 @@ class My_Robot_Task(tasks.BaseTask):
             joint_positions = dpi_arr(warm_start/np.pi*180, joint_positions/np.pi*180)/180*np.pi
             warm_start = joint_positions
             joint_position_traj.append(joint_positions)
-        import matplotlib.pyplot as plt
-        plt.plot(joint_position_traj)
-        plt.show()
+        # import matplotlib.pyplot as plt
+        # plt.plot(joint_position_traj)
+        # plt.show()
         if return_traj:
             return np.array(joint_position_traj)
         

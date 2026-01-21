@@ -12,7 +12,7 @@ class RobotConfig:
     urdf_path: str
     description_path: str
 
-    ee_link_path: str
+    # ee_link_path: str
     gripper_joint_prim_names: tuple[str, ...]
     total_joint_num: int
 
@@ -54,18 +54,20 @@ def robotis_omy() -> RobotConfig:
         total_joint_num=10,
         joint_opened_positions=np.array([0.0, 0.0], dtype=np.float32),
         joint_closed_positions=np.array([1.04, 1.04], dtype=np.float32),
+        ## OMY_grasp_joint ( grasp inverse link name
     )
 
 def doosan_m1013() -> RobotConfig:
     return RobotConfig(
         prim_path="/World/Robot",
-        asset_path="/nas/ochansol/isaac/USD/robots/manipulator/Doosan_M1013/Doosan_M1013_2025/Doosan_M1013_org.usd",
+        asset_path="/nas/ochansol/isaac/USD/robots/manipulator/Doosan_M1013/Doosan_M1013_2026/Doosan_M1013_org.usd",
 
-        urdf_path="/nas/ochansol/isaac/USD/robots/manipulator/Doosan_M1013/Doosan_M1013_2025/Doosan_M1013_edited.urdf",
-        description_path="/nas/ochansol/isaac/USD/robots/manipulator/Doosan_M1013/Doosan_M1013_2025/Doosan_M1013_edited.yaml",
+        urdf_path="/nas/ochansol/isaac/USD/robots/manipulator/Doosan_M1013/Doosan_M1013_2026/Doosan_M1013_2026.urdf",
+        description_path="/nas/ochansol/isaac/USD/robots/manipulator/Doosan_M1013/Doosan_M1013_2026/Doosan_M1013_2026.yaml",
         
         gripper_joint_prim_names=None,
         total_joint_num=6,
+        ## Robotiq_2f140_open  ( grasp inverse link name)
     )
 
 
