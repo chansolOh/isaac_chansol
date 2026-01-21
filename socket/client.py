@@ -129,7 +129,7 @@ class TcpClient:
 
 
 if __name__ == "__main__":
-    c = RosNameTcpClient("192.168.0.137", 9111, name="/chansol/robot")
+    c = TcpClient("192.168.0.137", 9111, name="/chansol/robot")
     c.connect()
 
     print(c.send("echo", 

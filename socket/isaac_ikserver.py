@@ -41,7 +41,7 @@ class IK_isaac:
         self.my_robot = self.my_robot_task._robot
 
 
-    def get_ik(self, target_pos = np.array([0.3,0.3,0.3]), target_ori = np.array([0,0,0]), return_traj=False):
+    def get_ik(self, target_pos = np.array([0.3,0.3,0.3]), target_ori = np.array([0,0,0]), frame_name="Robotiq_2f140_open", return_traj=False):
         if type(target_pos) == type([]):
             target_pos = np.array(target_pos)
         if type(target_ori) == type([]):
@@ -50,7 +50,7 @@ class IK_isaac:
 
         target_joint_positions = self.my_robot_task.compute_ik_traj(target_position = target_pos,
                                             target_orientation = np.array([180,0,0]) + target_ori,
-                                            frame_name = "Robotiq_2f140_open",
+                                            frame_name = frame_name,
                                             return_traj=return_traj
                                             )
         deg = np.round(np.array(target_joint_positions)/np.pi*180,3)
@@ -79,9 +79,11 @@ class IsaacIkServer(TcpServer):
         if op == "get_ik":
             target_pos = np.array(data["target_pos"])
             target_ori = np.array(data["target_ori"])
+            frame_name = data.get("frame_name", "Robotiq_2f140_open")
             return_traj = data.get("return_traj", False)
             joint_positions = self.ik_isaac.get_ik(target_pos=target_pos, 
                                  target_ori=target_ori, 
+                                 frame_name=frame_name,
                                  return_traj=return_traj
                                  )
 

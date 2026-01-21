@@ -11,6 +11,7 @@ if __name__ == "__main__":
             {
                 "target_pos": [0.0, 0.0, 0.3],
                 "target_ori": [0, 0, 0],
+                "frame_name": "Robotiq_2f140_close",
                 "return_traj": True
             }
         )
