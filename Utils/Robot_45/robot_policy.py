@@ -49,7 +49,7 @@ class My_Robot_Task(tasks.BaseTask):
         self,
         robot_config: RobotConfig,
         name: str = "My_Robot",
-
+        idle_joint: Optional[np.ndarray] = None,
         offset: Optional[np.ndarray] = None,
     ) -> None:
         tasks.BaseTask.__init__(self, name=name, offset=offset)
@@ -61,7 +61,7 @@ class My_Robot_Task(tasks.BaseTask):
         self.stage = omni.usd.get_context().get_stage()
     
 
-        self.joint_states = None
+        self.idle_joint = idle_joint
         return
 
     
@@ -116,7 +116,7 @@ class My_Robot_Task(tasks.BaseTask):
                 scale = self.robot_scale ,
             )
  
-        joints_default_positions = np.zeros(self.total_joint_num)
+        joints_default_positions = np.zeros(self.total_joint_num) if self.idle_joint is None else self.idle_joint
         manipulator.set_joints_default_state(positions=torch.tensor(joints_default_positions, dtype=torch.float32))
 
         return manipulator
@@ -161,14 +161,17 @@ class My_Robot_Task(tasks.BaseTask):
         target_position : Optional[list],
         target_orientation : Optional[list], 
         frame_name : str ,
-        # warm_start : np.ndarray,
+        idle_joint : Optional[np.ndarray] = None,
         return_traj: bool = False
         ):
 
         init_pos, init_rot = self.compute_fk(
             frame_name = frame_name,
         )
-        warm_start = self.get_joint_positions()
+        if idle_joint is not None:
+            warm_start = idle_joint
+        else:
+            warm_start = self.get_joint_positions()
 
         target_orientation = dpi_arr(init_rot, np.array(target_orientation))
 

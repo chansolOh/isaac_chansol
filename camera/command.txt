@@ -1,0 +1,3 @@
+########     usb buffer size up
+
+echo 16000 | sudo tee /sys/module/usbcore/parameters/usbfs_memory_mb
