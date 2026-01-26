@@ -1,0 +1,140 @@
+{
+  "mask_path": "/home/uon/ochansol/isaac_chansol/hanhwa/pred_results/20260123144613/segmentation_instance_mask.npy",
+  "objects": {
+    "0": {
+      "class": 1,
+      "conf": 0.8972775936126709,
+      "bbox": [
+        203,
+        163,
+        344,
+        323
+      ],
+      "mask_shape": [
+        480,
+        640
+      ],
+      "instance_id": 1
+    },
+    "1": {
+      "class": 1,
+      "conf": 0.8851901292800903,
+      "bbox": [
+        337,
+        61,
+        437,
+        248
+      ],
+      "mask_shape": [
+        480,
+        640
+      ],
+      "instance_id": 2
+    },
+    "2": {
+      "class": 0,
+      "conf": 0.8844013810157776,
+      "bbox": [
+        321,
+        207,
+        359,
+        251
+      ],
+      "mask_shape": [
+        480,
+        640
+      ],
+      "instance_id": 3
+    },
+    "3": {
+      "class": 1,
+      "conf": 0.8717515468597412,
+      "bbox": [
+        264,
+        174,
+        436,
+        215
+      ],
+      "mask_shape": [
+        480,
+        640
+      ],
+      "instance_id": 4
+    },
+    "4": {
+      "class": 1,
+      "conf": 0.8318281769752502,
+      "bbox": [
+        166,
+        137,
+        191,
+        314
+      ],
+      "mask_shape": [
+        480,
+        640
+      ],
+      "instance_id": 5
+    },
+    "5": {
+      "class": 0,
+      "conf": 0.8189414143562317,
+      "bbox": [
+        458,
+        213,
+        497,
+        258
+      ],
+      "mask_shape": [
+        480,
+        640
+      ],
+      "instance_id": 6
+    },
+    "6": {
+      "class": 0,
+      "conf": 0.8161632418632507,
+      "bbox": [
+        390,
+        100,
+        432,
+        142
+      ],
+      "mask_shape": [
+        480,
+        640
+      ],
+      "instance_id": 7
+    },
+    "7": {
+      "class": 1,
+      "conf": 0.6898701786994934,
+      "bbox": [
+        428,
+        155,
+        463,
+        320
+      ],
+      "mask_shape": [
+        480,
+        640
+      ],
+      "instance_id": 8
+    },
+    "8": {
+      "class": 1,
+      "conf": 0.6153134703636169,
+      "bbox": [
+        430,
+        156,
+        461,
+        347
+      ],
+      "mask_shape": [
+        480,
+        640
+      ],
+      "instance_id": 9
+    }
+  }
+}

@@ -72,7 +72,9 @@ light_2 = prim_utils.create_prim(
 
 Robot_Cfg = robot_configs.ROBOT_CONFIGS["Doosan_M1013"]()
 my_robot_task = robot_policy.My_Robot_Task(robot_config=Robot_Cfg, name="robot_task",
-                                           idle_joint = np.array([[-0.24362245,  0.63039388, -2.18098065,  3.14228947, -4.69274584,  6.03898028]]) )
+                                           idle_joint = np.array([
+                                               [  94.43 ,  -34.29 , 113.58  , -4.01 , 100.53, 1.71]
+                                               ])/180.0*np.pi )
 my_world.add_task(my_robot_task)
 my_world.reset()
 robot_name = my_robot_task.get_robot_name
@@ -166,7 +168,7 @@ while simulation_app.is_running():
                 ik_first_flag =False
 
                 # print(target_pos)
-                print(target_joint_positions)
+                print(target_joint_positions/np.pi*180)
                 # my_world.pause()
 
             target_joint = target_joint_positions[traj_idx]

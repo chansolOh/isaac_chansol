@@ -1,0 +1,95 @@
+{
+  "mask_path": "/home/uon/ochansol/isaac_chansol/hanhwa/pred_results/20260123174948/segmentation_instance_mask.npy",
+  "objects": {
+    "0": {
+      "class": 0,
+      "conf": 0.910338282585144,
+      "bbox": [
+        324,
+        182,
+        373,
+        236
+      ],
+      "mask_shape": [
+        480,
+        640
+      ],
+      "instance_id": 1
+    },
+    "1": {
+      "class": 0,
+      "conf": 0.9070811867713928,
+      "bbox": [
+        161,
+        169,
+        208,
+        219
+      ],
+      "mask_shape": [
+        480,
+        640
+      ],
+      "instance_id": 2
+    },
+    "2": {
+      "class": 1,
+      "conf": 0.897801399230957,
+      "bbox": [
+        434,
+        128,
+        473,
+        323
+      ],
+      "mask_shape": [
+        480,
+        640
+      ],
+      "instance_id": 3
+    },
+    "3": {
+      "class": 0,
+      "conf": 0.8936042189598083,
+      "bbox": [
+        170,
+        211,
+        211,
+        257
+      ],
+      "mask_shape": [
+        480,
+        640
+      ],
+      "instance_id": 4
+    },
+    "4": {
+      "class": 0,
+      "conf": 0.881828248500824,
+      "bbox": [
+        204,
+        177,
+        246,
+        225
+      ],
+      "mask_shape": [
+        480,
+        640
+      ],
+      "instance_id": 5
+    },
+    "5": {
+      "class": 0,
+      "conf": 0.8762036561965942,
+      "bbox": [
+        208,
+        218,
+        249,
+        261
+      ],
+      "mask_shape": [
+        480,
+        640
+      ],
+      "instance_id": 6
+    }
+  }
+}
