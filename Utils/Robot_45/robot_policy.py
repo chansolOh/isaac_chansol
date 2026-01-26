@@ -44,6 +44,24 @@ def dpi_arr(deg_arr, target_deg_arr):
     result_arr[under_idx] -=360
     return result_arr
 
+def detect_joint_jumps(q: np.ndarray, thr: float):
+    """
+    q: (T, J) joint array
+    thr: 한 스텝에서 허용하는 최대 변화량 (rad 또는 deg 기준 일관되게)
+    return:
+      jumps_idx: 급변이 발생한 '스텝 인덱스' (t: q[t-1] -> q[t])
+      jump_joints: 각 점프에서 어떤 joint가 튀었는지 (list of arrays)
+      dq: (T-1, J) 스텝 차이
+    """
+    dq = np.diff(q, axis=0)                  # (T-1, J)
+    mask = np.abs(dq) > thr                  # (T-1, J)
+    jumps_idx = np.where(mask.any(axis=1))[0] + 1  # q[t]가 튄 t
+    if len(jumps_idx) > 0:
+        jump = True
+    else:
+        jump = False
+    return jump
+
 class My_Robot_Task(tasks.BaseTask):
     def __init__(
         self,
@@ -161,15 +179,16 @@ class My_Robot_Task(tasks.BaseTask):
         target_position : Optional[list],
         target_orientation : Optional[list], 
         frame_name : str ,
-        idle_joint : Optional[np.ndarray] = None,
+        init_joint_state : Optional[np.ndarray] = None,
         return_traj: bool = False
         ):
 
         init_pos, init_rot = self.compute_fk(
             frame_name = frame_name,
+            joint_positions = init_joint_state
         )
-        if idle_joint is not None:
-            warm_start = idle_joint
+        if init_joint_state is not None:
+            warm_start = init_joint_state
         else:
             warm_start = self.get_joint_positions()
 
@@ -200,9 +219,13 @@ class My_Robot_Task(tasks.BaseTask):
             warm_start = joint_positions
             joint_position_traj.append(joint_positions)
         # import matplotlib.pyplot as plt
-        # plt.plot(joint_position_traj)
+        # plt.plot(np.array(joint_position_traj)/np.pi*180)
         # plt.show()
         if return_traj:
+            if detect_joint_jumps(np.array(joint_position_traj)/np.pi*180, thr=25):
+                print("error: Joint jump detected in IK trajectory!")
+                return self.get_joint_positions()[None,:]
+            
             return np.array(joint_position_traj)
         
         return joint_positions
@@ -210,11 +233,12 @@ class My_Robot_Task(tasks.BaseTask):
 
     def compute_fk(self, 
         frame_name:str, 
+        joint_positions: Optional[np.ndarray] = None
         ):
 
         if frame_name == None : 
             frame_name = self.kinematics_solver.get_all_frame_names()[7]; print(frame_name)
-        pos, rot_mat = self.kinematics_solver.compute_forward_kinematics(frame_name =frame_name, joint_positions = self.get_joint_positions())
+        pos, rot_mat = self.kinematics_solver.compute_forward_kinematics(frame_name =frame_name, joint_positions = self.get_joint_positions() if joint_positions is None else joint_positions)
 
         rot = mat_utils.mat_to_euler(rot_mat)
         return pos, rot

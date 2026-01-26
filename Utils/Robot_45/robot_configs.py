@@ -67,6 +67,7 @@ def doosan_m1013() -> RobotConfig:
         
         gripper_joint_prim_names=None,
         total_joint_num=6,
+        # robot_ori=mat_utils.euler_to_quat(np.array([0.0, 0.0, 180.0]), degrees=True),
         ## Robotiq_2f140_open  ( grasp inverse link name)
     )
 
