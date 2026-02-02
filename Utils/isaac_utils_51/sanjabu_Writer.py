@@ -52,16 +52,16 @@ class SanjabuWriter(BasicWriter):
 
         self.output_path = output_path
 
-        self.rgb_path                       = rgb_path if rgb_path is not None else self.rgb_path
-        self.normals_path                   = normals_path if normals_path is not None else self.normals_path
-        self.distance_to_camera_path        = distance_to_camera_path if distance_to_camera_path is not None else self.distance_to_camera_path
-        self.distance_to_image_plane_path   = distance_to_image_plane_path if distance_to_image_plane_path is not None else self.distance_to_image_plane_path
-        self.semantic_segmentation_path     = semantic_segmentation_path if semantic_segmentation_path is not None else self.semantic_segmentation_path
-        self.instance_segmentation_path     = instance_segmentation_path if instance_segmentation_path is not None else self.instance_segmentation_path
-        self.bounding_box_path              = bounding_box_path if bounding_box_path is not None else self.bounding_box_path 
-        self.camera_params_path             = camera_params_path if camera_params_path is not None else self.camera_params_path
-        self.pointcloud_path                = pointcloud_path if pointcloud_path is not None else self.pointcloud_path
-        self.occlusion_path                 = occlusion_path if occlusion_path is not None else self.occlusion_path
+        self.rgb_path                       = rgb_path if rgb_path is not None else None
+        self.normals_path                   = normals_path if normals_path is not None else None
+        self.distance_to_camera_path        = distance_to_camera_path if distance_to_camera_path is not None else None
+        self.distance_to_image_plane_path   = distance_to_image_plane_path if distance_to_image_plane_path is not None else None
+        self.semantic_segmentation_path     = semantic_segmentation_path if semantic_segmentation_path is not None else None
+        self.instance_segmentation_path     = instance_segmentation_path if instance_segmentation_path is not None else None
+        self.bounding_box_path              = bounding_box_path if bounding_box_path is not None else None
+        self.camera_params_path             = camera_params_path if camera_params_path is not None else None
+        self.pointcloud_path                = pointcloud_path if pointcloud_path is not None else None
+        self.occlusion_path                 = occlusion_path if occlusion_path is not None else None
     
     
     def set_frame(self, frame_id=0, frame_padding=4):

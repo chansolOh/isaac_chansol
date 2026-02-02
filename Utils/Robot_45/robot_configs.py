@@ -34,7 +34,7 @@ def robotis_omy_dual_arms() -> RobotConfig:
         urdf_path="/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom_dual.urdf",
         description_path="/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom.yaml",
 
-        ee_link_path="OMY_custom/OMY/link6",
+        # ee_link_path="OMY_custom/OMY/link6",
         gripper_joint_prim_names=None,#("rh_r1_joint", "rh_l1"),
         total_joint_num=10,
         joint_opened_positions=np.array([0.0, 0.0], dtype=np.float32),
@@ -49,7 +49,7 @@ def robotis_omy() -> RobotConfig:
         urdf_path="/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom.urdf",
         description_path="/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom.yaml",
         
-        ee_link_path="OMY/link6",
+        # ee_link_path="OMY/link6",
         gripper_joint_prim_names=("rh_r1_joint", "rh_l1"),
         total_joint_num=10,
         joint_opened_positions=np.array([0.0, 0.0], dtype=np.float32),

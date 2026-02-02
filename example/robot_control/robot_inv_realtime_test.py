@@ -176,10 +176,10 @@ while simulation_app.is_running():
 
                 target_orientation = np.linalg.inv(robot_tf).dot( mat_utils.rotate(target_orientation) )
                 target_orientation = mat_utils.mat_to_euler(target_orientation, degrees=True)
-
                 target_joint_positions = my_robot_task.compute_ik_traj(target_position = target_pos,
                                             target_orientation = target_orientation,
                                             frame_name = "OMY_grasp_joint",
+                                            init_joint_state=my_robot_task.get_joint_positions()
                                             )
 
                 

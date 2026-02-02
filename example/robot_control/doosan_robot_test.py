@@ -158,6 +158,7 @@ while simulation_app.is_running():
                 target_joint_positions = my_robot_task.compute_ik_traj(target_position = target_pos,
                                             target_orientation = target_orientation,
                                             frame_name = "Robotiq_2f140_open",
+                                            init_joint_state=my_robot.get_joint_positions()
                                             )
 
                 
