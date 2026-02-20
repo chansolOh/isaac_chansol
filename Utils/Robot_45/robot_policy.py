@@ -108,7 +108,7 @@ class My_Robot_Task(tasks.BaseTask):
         
         if self.gripper_joint_prim_names==None:
             manipulator = SingleArticulation(
-                prim_path=self.prim_path,
+                prim_path=self.prim_path if self.extra_prim_path is None else self.extra_prim_path,
                 name=self.name,
                 position = self.robot_pos,
                 orientation = self.robot_ori,
@@ -117,7 +117,7 @@ class My_Robot_Task(tasks.BaseTask):
 
         else:
             gripper = ParallelGripper(
-                end_effector_prim_path=os.path.join(self.prim_path, self.ee_link_path),
+                end_effector_prim_path=os.path.join(self.prim_path if self.extra_prim_path is None else self.extra_prim_path, self.ee_link_path),
                 joint_prim_names=self.gripper_joint_prim_names,
                 joint_opened_positions=self.joint_opened_positions,
                 joint_closed_positions=self.joint_closed_positions,
@@ -127,7 +127,7 @@ class My_Robot_Task(tasks.BaseTask):
             manipulator = SingleManipulator(
                 prim_path=self.prim_path,
                 name=self.name,
-                end_effector_prim_path=os.path.join(self.prim_path, self.ee_link_path),
+                end_effector_prim_path=os.path.join(self.prim_path if self.extra_prim_path is None else self.extra_prim_path, self.ee_link_path),
                 gripper=gripper,
                 position = self.robot_pos ,
                 orientation = self.robot_ori ,

@@ -12,18 +12,54 @@ class RobotConfig:
     urdf_path: str
     description_path: str
 
-    # ee_link_path: str
     gripper_joint_prim_names: tuple[str, ...]
     total_joint_num: int
 
     joint_opened_positions: Optional[np.ndarray] = None
     joint_closed_positions: Optional[np.ndarray] = None
 
-
+    ee_link_path: Optional[str] = None
     robot_pos: Optional[np.ndarray] = None
     robot_ori: Optional[np.ndarray] = None
     robot_scale: Optional[np.ndarray] = None
+    tcp_prim_name : Optional[str] = None
+    extra_prim_path : Optional[str] = None
 
+def robotis_omy_sim2real() -> RobotConfig:
+    return RobotConfig(
+        prim_path="/World/Robot",
+        extra_prim_path = "/World/Robot/OMY_custom_no_delay",
+        ee_link_path="OMY/link6",
+        asset_path =        "/nas/ochansol/isaac/sim2real/uon_vla_demo_robotis_no_delay.usd",
+
+        urdf_path=          "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom.urdf",
+        description_path=   "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom.yaml",
+        
+        gripper_joint_prim_names=("rh_r1_joint", "rh_l1"),
+        total_joint_num=10,
+        joint_opened_positions=np.array([0.0, 0.0], dtype=np.float32),
+        joint_closed_positions=np.array([1.04, 1.04], dtype=np.float32),
+        tcp_prim_name = "grasp_point"
+        ## OMY_grasp_joint ( grasp inverse link name
+    )
+
+def robotis_omy_vla_demo() -> RobotConfig:
+    return RobotConfig(
+        prim_path="/World/Robot",
+        extra_prim_path = "/World/Robot/OMY_custom_no_delay",
+        ee_link_path="OMY/link6",
+        asset_path =        "/nas/ochansol/isaac/sim2real/uon_vla_demo_robotis.usd",
+
+        urdf_path=          "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom.urdf",
+        description_path=   "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom.yaml",
+        
+        gripper_joint_prim_names=("rh_r1_joint", "rh_l1"),
+        total_joint_num=10,
+        joint_opened_positions=np.array([0.0, 0.0], dtype=np.float32),
+        joint_closed_positions=np.array([1.04, 1.04], dtype=np.float32),
+        tcp_prim_name = "grasp_point"
+        ## OMY_grasp_joint ( grasp inverse link name
+    )
 
 
 def robotis_omy_dual_arms() -> RobotConfig:
@@ -46,11 +82,11 @@ def robotis_omy() -> RobotConfig:
         prim_path="/World/Robot",
         asset_path="/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/OMY_custom.usd",
 
-        urdf_path="/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom.urdf",
-        description_path="/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom.yaml",
+        urdf_path=          "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom.urdf",
+        description_path=   "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom.yaml",
         
         # ee_link_path="OMY/link6",
-        gripper_joint_prim_names=("rh_r1_joint", "rh_l1"),
+        gripper_joint_prim_names=None,#("rh_r1_joint", "rh_l1"),
         total_joint_num=10,
         joint_opened_positions=np.array([0.0, 0.0], dtype=np.float32),
         joint_closed_positions=np.array([1.04, 1.04], dtype=np.float32),
@@ -76,4 +112,6 @@ ROBOT_CONFIGS = {
     "Robotis_OMY_Dual_Arms": robotis_omy_dual_arms,
     "Robotis_OMY": robotis_omy,
     "Doosan_M1013": doosan_m1013,
+    "Robotis_OMY_Sim2Real": robotis_omy_sim2real,
+    "Robotis_OMY_VLA_Demo": robotis_omy_vla_demo,
 }
