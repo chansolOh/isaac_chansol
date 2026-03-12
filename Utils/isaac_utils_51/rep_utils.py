@@ -229,6 +229,32 @@ def set_random_tf_in_boundary(obj_prim:Usd.Prim, boundary, rotation=True): # bou
         elif obj_prim.HasAttribute('xformOp:orient'):
             obj_prim.GetAttribute('xformOp:orient').Set( np_to_GfQuatf(rot_utils.euler_angles_to_quat((x,y,z), degrees=True)))
 
+def set_random_tf_in_boundary_new(obj_prim:Usd.Prim, boundary, rotation=["x","y","z"]): # boundary = [[min_x, min_y, min_z], [max_x, max_y, max_z]]
+    pos_x = np.random.uniform(boundary[0][0], boundary[1][0])
+    pos_y = np.random.uniform(boundary[0][1], boundary[1][1])
+    pos_z = np.random.uniform(boundary[0][2], boundary[1][2])
+    
+    obj_prim.GetAttribute('xformOp:translate').Set(Gf.Vec3d( tuple((pos_x, pos_y, pos_z))    ))
+    if rotation:
+        random_rotation = R.random()
+        rand_x, rand_y, rand_z = random_rotation.as_euler('xyz', degrees=True)
+        if obj_prim.HasAttribute('xformOp:rotateXYZ'):
+            org_x,org_y, org_z = obj_prim.GetAttribute('xformOp:rotateXYZ').Get()
+            x = rand_x if "x" in rotation else org_x
+            y = rand_y if "y" in rotation else org_y
+            z = rand_z if "z" in rotation else org_z
+            obj_prim.GetAttribute('xformOp:rotateXYZ').Set(Gf.Vec3d(x,y,z))
+        elif obj_prim.HasAttribute('xformOp:orient'):
+            quat = obj_prim.GetAttribute('xformOp:orient').Get()
+            org_w = quat.real
+            org_x, org_y, org_z = quat.imaginary
+            org_x, org_y, org_z = rot_utils.quat_to_euler_angles((org_w, org_x, org_y, org_z), degrees=True)
+        
+            x = rand_x if "x" in rotation else org_x
+            y = rand_y if "y" in rotation else org_y
+            z = rand_z if "z" in rotation else org_z
+            obj_prim.GetAttribute('xformOp:orient').Set( np_to_GfQuatf(rot_utils.euler_angles_to_quat((x,y,z), degrees=True)))
+
     
 def obb_col_check_pair(obj1,obj2): # obj1, obj2 = prim_path, sdf.path
     c1_obb = obj1.get_obb()
@@ -349,6 +375,35 @@ def scatter3D_obb_in_boundary(rep_list, boundary, drop_out:bool = True, fixed_fi
     #     debug_draw_obb(fixed.get_obb())
 
 
+def scatter3D_obb_in_boundary_spread(rep_list, boundary,  fixed_first = False, rotation=[["x","y","z"]]): # str path list, sdf.path list
+    if len(rotation) != len(rep_list):
+        rotation = np.tile(rotation, (len(rep_list),1))
+    fixed_list = []
+    fixed_list.append(rep_list[0])
+
+    if not fixed_first:
+        set_random_tf_in_boundary_new(rep_list[0].prim, boundary, rotation=rotation[0])
+        
+    loop_th = 1000
+    for obj_rep, rot in zip(rep_list[1:], rotation[1:]):
+        set_random_tf_in_boundary_new(obj_rep.prim, boundary, rotation=rot)
+
+        loop = 0
+        while loop< loop_th:
+            loop +=1
+            if loop >=loop_th:
+                print("scatter_3d_err")
+            pass_cnt = 0
+            for fixed in fixed_list:
+                if not obb_col_check_pair(fixed,obj_rep):
+                    pass_cnt+=1
+                    if pass_cnt>=len(fixed_list):
+                        fixed_list.append(obj_rep)
+                        loop = loop_th    
+                        break
+                else:
+                    set_random_tf_in_boundary_new(obj_rep.prim, boundary, rotation=rot)
+                    break
 
 def cam_auto_zoom(camera_rep,writer):
     pass
@@ -419,6 +474,14 @@ def scatter_in_platform_area( target_rep,rep_list,fixed_first = True, rotation=T
     area_obb = get_obb(area_box)
     # debug_draw_obb(area_obb)
     scatter3D_obb_in_boundary(rep_list, boundary=np.array([area_obb.min(0),area_obb.max(0)]), fixed_first=fixed_first, rotation=rotation)
+
+def scatter_in_platform_area_spread( target_rep,rep_list,fixed_first = True, rotation=True):
+
+    if not hasattr(target_rep,"platform_area") or target_rep.platform_area.__len__()<1: raise ValueError("target_rep must have platform_area attribute")
+    area_box = np.random.choice(target_rep.platform_area,1)[0]
+    area_obb = get_obb(area_box)
+    # debug_draw_obb(area_obb)
+    scatter3D_obb_in_boundary_spread(rep_list, boundary=np.array([area_obb.min(0),area_obb.max(0)]), fixed_first=fixed_first, rotation=rotation)
     
 
 def get_obb(prim):

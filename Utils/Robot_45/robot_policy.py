@@ -24,7 +24,6 @@ from omni.isaac.core.utils.prims import is_prim_path_valid
 from omni.isaac.core.utils.rotations import euler_angles_to_quat
 from omni.isaac.core.utils.stage import get_stage_units
 from omni.isaac.core.utils.string import find_unique_string_name
-from omni.isaac.motion_generation.lula.kinematics import LulaKinematicsSolver
 from isaacsim.core.prims import XFormPrim
 import omni.usd
 from pxr import UsdGeom, Gf
@@ -33,6 +32,16 @@ from isaacsim.core.utils.types import ArticulationAction
 
 from .robot_configs import RobotConfig
 from ..general_utils import mat_utils
+
+
+from isaacsim.robot_motion.motion_generation import (
+    LulaCSpaceTrajectoryGenerator,
+    LulaTaskSpaceTrajectoryGenerator,
+    LulaKinematicsSolver,
+    ArticulationTrajectory
+)
+from isaacsim.core.api import World
+
 
 # Inheriting from the base class Follow Target
 
@@ -75,10 +84,10 @@ class My_Robot_Task(tasks.BaseTask):
         self.cfg = robot_config
         for k, v in vars(self.cfg).items():
             setattr(self, k, v)
-
+        self.world = World()
         self.stage = omni.usd.get_context().get_stage()
-    
 
+        self.physics_dt = self.world.get_physics_dt()
         self.idle_joint = idle_joint
         return
 
@@ -94,6 +103,7 @@ class My_Robot_Task(tasks.BaseTask):
 
         self._robot = self.set_robot()
         self.kinematics_solver = self.set_solver()
+        self.c_space_trajectory_generator, self.taskspace_trajectory_generator = self.set_motion_gen_solver()
         self.joint_names = self.kinematics_solver.get_joint_names()
         self.robot_prim = self.stage.GetPrimAtPath(self.prim_path)
         
@@ -156,6 +166,17 @@ class My_Robot_Task(tasks.BaseTask):
                             urdf_path = self.urdf_path
         )
         return kinematics_solver
+    def set_motion_gen_solver(self):
+        c_space_trajectory_generator = LulaCSpaceTrajectoryGenerator(
+            robot_description_path = self.description_path,
+            urdf_path = self.urdf_path
+        )
+
+        taskspace_trajectory_generator = LulaTaskSpaceTrajectoryGenerator(
+            robot_description_path = self.description_path,
+            urdf_path = self.urdf_path
+        )
+        return c_space_trajectory_generator, taskspace_trajectory_generator
 
     def compute_ik(self,
         target_position : Optional[list],
@@ -254,4 +275,34 @@ class My_Robot_Task(tasks.BaseTask):
     def post_reset(self):
         
         return
+    def trajectory_gen_cspace(self, joint_array,time_array=None, physics_dt = None):
+        if time_array is None:
+            ## optimal time trajectory
+            trajectory_time = self.c_space_trajectory_generator.compute_c_space_trajectory(joint_array)
+        else:
+            ## timestamped trajectory
+            trajectory_time = self.c_space_trajectory_generator.compute_timestamped_c_space_trajectory(joint_array,time_array)
+
+
+        articulation_trajectory = ArticulationTrajectory(self._robot, trajectory_time, self.physics_dt if physics_dt is None else physics_dt)
+        action_sequence=articulation_trajectory.get_action_sequence()
+
+        return action_sequence
     
+
+    def trajectory_gen_taskspace(self, position_array, orientation_array, ee_prim_name):
+
+        trajectory_time = self.taskspace_trajectory_generator.compute_task_space_trajectory_from_points(position_array, orientation_array, ee_prim_name)
+        
+        articulation_trajectory = ArticulationTrajectory(self._robot, trajectory_time, self.physics_dt)
+        action_sequence=articulation_trajectory.get_action_sequence()
+
+        return action_sequence
+    
+    def rrt_plan_to_traj_actions(self,plan, physics_dt = 0.02):
+        joint_waypoints = []
+        for action in plan:
+            joint_waypoints.append(action.joint_positions)
+        return self.trajectory_gen_cspace(np.asarray(joint_waypoints), physics_dt=physics_dt)
+
+

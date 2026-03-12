@@ -15,6 +15,8 @@ class RobotConfig:
     gripper_joint_prim_names: tuple[str, ...]
     total_joint_num: int
 
+    curobo_yml_path : Optional[str] = None
+
     joint_opened_positions: Optional[np.ndarray] = None
     joint_closed_positions: Optional[np.ndarray] = None
 
@@ -34,6 +36,7 @@ def robotis_omy_sim2real() -> RobotConfig:
 
         urdf_path=          "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom.urdf",
         description_path=   "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom.yaml",
+        curobo_yml_path=    "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/Robotis_OMY_curobo.yml",
         
         gripper_joint_prim_names=("rh_r1_joint", "rh_l1"),
         total_joint_num=10,
@@ -84,6 +87,24 @@ def robotis_omy() -> RobotConfig:
 
         urdf_path=          "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom.urdf",
         description_path=   "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom.yaml",
+        curobo_yml_path=    "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/Robotis_OMY_curobo.yml",
+        
+        # ee_link_path="OMY/link6",
+        gripper_joint_prim_names=None,#("rh_r1_joint", "rh_l1"),
+        total_joint_num=10,
+        joint_opened_positions=np.array([0.0, 0.0], dtype=np.float32),
+        joint_closed_positions=np.array([1.04, 1.04], dtype=np.float32),
+        ## OMY_grasp_joint ( grasp inverse link name
+    )
+
+def robotis_omy_no_delay() -> RobotConfig:
+    return RobotConfig(
+        prim_path="/World/Robot",
+        asset_path="/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/OMY_custom_no_delay_new.usd",
+
+        urdf_path=          "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom.urdf",
+        description_path=   "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom.yaml",
+        curobo_yml_path=    "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/Robotis_OMY_curobo.yml",
         
         # ee_link_path="OMY/link6",
         gripper_joint_prim_names=None,#("rh_r1_joint", "rh_l1"),
@@ -108,10 +129,43 @@ def doosan_m1013() -> RobotConfig:
     )
 
 
+def ur10() -> RobotConfig:
+    return RobotConfig(
+        prim_path="/World/Robot",
+        asset_path="/nas/ochansol/isaac/USD/robots/manipulator/UR10/ur10.usd",
+
+        urdf_path="/home/uon/ochansol/isaac_code/isaac_chansol/Utils/Robot_45/basic_ik/motion_policy_configs/universal_robots/ur10/ur10_robot.urdf",
+        description_path="/home/uon/ochansol/isaac_code/isaac_chansol/Utils/Robot_45/basic_ik/motion_policy_configs/universal_robots/ur10/rmpflow/ur10_robot_description.yaml",
+        curobo_yml_path = "/nas/ochansol/isaac/USD/robots/manipulator/UR10/ur10e_curobo.yml",
+
+        gripper_joint_prim_names=None,
+        total_joint_num=6,
+        # robot_ori=mat_utils.euler_to_quat(np.array([0.0, 0.0, 180.0]), degrees=True),
+        ## Robotiq_2f140_open  ( grasp inverse link name)
+    )
+
+def ur5e() -> RobotConfig:
+    return RobotConfig(
+        prim_path="/World/Robot",
+        asset_path="/nas/ochansol/isaac/USD/robots/manipulator/UR5e/ur5e.usd",
+
+        urdf_path="/home/uon/ochansol/isaac_code/isaac_chansol/Utils/Robot_45/basic_ik/motion_policy_configs/universal_robots/ur5e/ur5e.urdf",
+        description_path="/home/uon/ochansol/isaac_code/isaac_chansol/Utils/Robot_45/basic_ik/motion_policy_configs/universal_robots/ur5e/rmpflow/ur5e_robot_description.yaml",
+        
+        gripper_joint_prim_names=None,
+        total_joint_num=6,
+        # robot_ori=mat_utils.euler_to_quat(np.array([0.0, 0.0, 180.0]), degrees=True),
+        ## Robotiq_2f140_open  ( grasp inverse link name)
+    )
+
+
 ROBOT_CONFIGS = {
     "Robotis_OMY_Dual_Arms": robotis_omy_dual_arms,
     "Robotis_OMY": robotis_omy,
+    "Robotis_OMY_no_delay": robotis_omy_no_delay,
     "Doosan_M1013": doosan_m1013,
     "Robotis_OMY_Sim2Real": robotis_omy_sim2real,
     "Robotis_OMY_VLA_Demo": robotis_omy_vla_demo,
+    "UR10" : ur10,
+    "UR5e" : ur5e
 }
