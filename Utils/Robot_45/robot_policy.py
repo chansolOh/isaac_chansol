@@ -273,7 +273,7 @@ class My_Robot_Task(tasks.BaseTask):
         return
     
     def post_reset(self):
-        
+        # SingleArticulation.post_reset(self._robot)
         return
     def trajectory_gen_cspace(self, joint_array,time_array=None, physics_dt = None):
         if time_array is None:
@@ -305,4 +305,12 @@ class My_Robot_Task(tasks.BaseTask):
             joint_waypoints.append(action.joint_positions)
         return self.trajectory_gen_cspace(np.asarray(joint_waypoints), physics_dt=physics_dt)
 
+    def rrt_plan_to_taskspace(self, plan, ee_prim_name):
+        position_array = []
+        orientation_array = []
+        for action in plan:
+            pos, euler = self.compute_fk(frame_name=ee_prim_name, joint_positions=action)
+            position_array.append(pos)
+            orientation_array.append(mat_utils.euler_to_quat(euler, degrees=True))
+        return np.array(position_array), np.array(orientation_array)
 

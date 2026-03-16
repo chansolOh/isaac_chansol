@@ -16,6 +16,8 @@ class RobotConfig:
     total_joint_num: int
 
     curobo_yml_path : Optional[str] = None
+    rmpflow_config_path : Optional[str] = None
+    rrt_description_path : Optional[str] = None
 
     joint_opened_positions: Optional[np.ndarray] = None
     joint_closed_positions: Optional[np.ndarray] = None
@@ -87,7 +89,10 @@ def robotis_omy() -> RobotConfig:
 
         urdf_path=          "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom.urdf",
         description_path=   "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom.yaml",
+
+        rrt_description_path = "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom_RRT.yaml",
         curobo_yml_path=    "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/Robotis_OMY_curobo.yml",
+        rmpflow_config_path="/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/omy_rmpflow_config.yaml",
         
         # ee_link_path="OMY/link6",
         gripper_joint_prim_names=None,#("rh_r1_joint", "rh_l1"),

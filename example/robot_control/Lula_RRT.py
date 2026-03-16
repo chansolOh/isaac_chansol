@@ -149,6 +149,8 @@ while True:
             # Replan every 60 frames if the target has moved
             rrt.set_end_effector_target(current_target_translation, current_target_orientation)
             rrt.update_world()
+            print(rrt._plan)
+            import pdb; pdb.set_trace()
             plan = path_planner_visualizer.compute_plan_as_articulation_actions(max_cspace_dist=.01)
 
             target_translation = current_target_translation

@@ -69,10 +69,11 @@ Robot_inst = basic_ik.BasicIk( chunk_size=8, action_size = 7)
 env_prim = stage.GetPrimAtPath(Robot_inst.robot_task.prim_path)
 
 
+env_prim = add_reference_to_stage(prim_path = "/World/env", usd_path ="/nas/ochansol/isaac/sim2real/uon_vla_demo_robotis_env.usd")
 
 ################### camera setup ####################
-full_img_cam_path = "/World/Robot/demo/full_camera"
-wrist_img_cam_path = "/World/Robot/OMY_custom_no_delay/OMY/link6/wrist_camera"
+full_cam_path = f"{str(env_prim.GetPrimPath())}/demo/full_camera"
+wrist_cam_path = f"{my_robot_task.prim_path}/OMY/link6/wrist_camera"
 
 full_res=(1280,720)
 wrist_res=(848,480)
@@ -110,42 +111,31 @@ obj_root_path = "/nas/ochansol/3d_model/scan_etc"
 sampled_model_dict={
     "apple":{
         "name":"apple",
-        "path": os.path.join(obj_root_path, "apple/edited/apple.usd"),
+        "path": "/nas/ochansol/3d_model/scan_etc/apple_test/apple.usd",
         "size_rank": 0,
+        "scale" : [0.1,0.1,0.1]
     },
-    # "paprika":{
-    #     "name":"paprika",
-    #     "path": os.path.join(obj_root_path, "paprika/edited/paprika.usd"),
-    #     "size_rank": 0,
-    # },
-    # "potato":{
-    #     "name":"potato",
-    #     "path": os.path.join(obj_root_path, "potato/edited/potato.usd"),
-    #     "size_rank": 0,
-    # },    
+    "box_magenta":{
+        "name":"box_magenta",
+        "path": "/nas/ochansol/3d_model/VLA/custom_box_12_12_08_magenta/custom_box_12_12_08_magenta.usd",
+        "size_rank": 0,
+        "scale" : [1,1,1]
+    }
 }
 
 # box_path_list = [os.path.join(Robot_inst.robot_task.prim_path,i) for i in ["custom_box_12_12_08_blue", "custom_box_12_12_08_yellow","custom_box_12_12_08_magenta"]]
 
-box_path_list = [os.path.join(Robot_inst.robot_task.prim_path,i) for i in ["custom_box_12_12_08_magenta"]]
-box_rep_list = []
-for box_path in box_path_list:
-    box_rep = scan_rep.Scan_Rep(
-        prim_path = box_path,
-        class_name = box_path.split("/")[-1],
-        scale=[1,1,1],
-        )
-    box_rep_list.append(box_rep)
-
-obj_rep_all_list = [] + box_rep_list
+obj_rep_all_list = []
 for key in sampled_model_dict:
     model_attr = sampled_model_dict[key]
     print("model_attr : ", model_attr["name"])
     scan_obj = scan_rep.Scan_Rep(usd_path =  model_attr["path"],
                             class_name = model_attr["name"],
-                            size = model_attr["size_rank"],)
+                            size = model_attr["size_rank"],
+                            scale = model_attr.get("scale", [0.1,0.1,0.1])
+                            )
+    sampled_model_dict[key]["rep"] = scan_obj
     obj_rep_all_list.append(scan_obj)
-
 
 for OBJ in obj_rep_all_list:
     print("set collider for : ", OBJ.class_name)
@@ -154,7 +144,7 @@ for OBJ in obj_rep_all_list:
     OBJ.set_physics_material(
         dynamic_friction=0.25,
         static_friction=0.4,
-        restitution=0.0
+        restitution=0.1
     )
 
 
