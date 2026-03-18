@@ -32,7 +32,7 @@ import ast
 
 
 
-def find_targets(prims, target_list):
+def find_targets(prims, target_list : list):
     ls = [prims]
     result_ls = []
     cnt = 0
@@ -49,7 +49,7 @@ def find_targets(prims, target_list):
         cnt+=1
     return result_ls
 
-def find_target_name(prim, target_type, target_name):
+def find_target_name(prim, target_type : list, target_name : str):
     targets = find_targets(prim, target_type)
     target_list = []
     for target in targets:
