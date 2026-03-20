@@ -16,6 +16,8 @@
 
 
 
+from copy import deepcopy
+
 from isaacsim import SimulationApp
 
 # from isaac_chansol.example.test.image_serve_test import Robot_inst
@@ -216,6 +218,8 @@ send_period = 1.0 / SEND_HZ
 next_send_time = time.perf_counter()
 client.start_infer_thread(hz=SEND_HZ)
 
+
+
 while simulation_app.is_running():
     my_world.step(render=True)
     sim_t = my_world.current_time
@@ -245,6 +249,7 @@ while simulation_app.is_running():
 
 
         state = my_robot_task.get_joint_positions()[[0,1,2,3,4,5,7]].tolist()  # joint state + gripper state
+        # state[-1]/=2
         # state = np.array(Robot_inst.get_state(action_type="joint"))[[0,1,2,3,4,5,-1]].tolist()  # joint state + gripper state
         full_rgb = annotator_full.get_data()
         wrist_rgb = annotator_wrist.get_data()
@@ -260,11 +265,16 @@ while simulation_app.is_running():
                 }, 
 
             action_type="joint")  # 이미지 1장
-        
+
+
         if client.action is not None:
+            infer_action = deepcopy(client.action)
+            infer_action[-1] *= 2
+
+
             my_robot.apply_action(ArticulationAction(
                         joint_indices=[0,1,2,3,4,5,7] ,  ####  joint name으로 index 찾아오기
-                        joint_positions = client.action))
+                        joint_positions = infer_action))
             # Robot_inst.set_action(client.action, action_type="joint", action_chunk=False)
 
 
