@@ -88,7 +88,7 @@ def robotis_omy() -> RobotConfig:
         asset_path="/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/OMY_custom.usd",
 
         urdf_path=          "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom.urdf",
-        description_path=   "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom.yaml",
+        description_path=   "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom_new.yaml",
 
         rrt_description_path = "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/OMY_custom_RRT.yaml",
         curobo_yml_path=    "/nas/ochansol/isaac/USD/robots/manipulator/Robotis_OMY/config/Robotis_OMY_curobo.yml",

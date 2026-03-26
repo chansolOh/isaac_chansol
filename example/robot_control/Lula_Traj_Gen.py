@@ -75,9 +75,9 @@ c_space_points = np.array([
     [0.4, -0.4, 0.4, 0, 0.4, 0,0,0],
             ])
 task_space_position_targets = np.array([
-    [0.2, 0., 0.1],
-    [0.1, 0.0, 0.1],
-    [0.2, 0., 0.1],
+    [0.2, 0., 0.2],
+    [0.0, 0., 0.2],
+    [-0.2, 0., 0.2],
     ])
 task_space_orientation_targets = np.tile(mat_utils.euler_to_quat(np.array([0,0,0]), degrees=True),(3,1))
 

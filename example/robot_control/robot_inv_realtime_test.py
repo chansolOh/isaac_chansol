@@ -88,7 +88,8 @@ light_2 = prim_utils.create_prim(
     }
 )
 
-Robot_Cfg = robot_configs.ROBOT_CONFIGS["Robotis_OMY_Dual_Arms"]()
+# Robot_Cfg = robot_configs.ROBOT_CONFIGS["Robotis_OMY_Dual_Arms"]()
+Robot_Cfg = robot_configs.ROBOT_CONFIGS["Robotis_OMY"]()
 my_robot_task = robot_policy.My_Robot_Task(robot_config=Robot_Cfg, name="robot_task" )
 my_world.add_task(my_robot_task)
 my_world.reset()
@@ -129,9 +130,9 @@ target_xprim = XFormPrim(
 my_world.scene.add(target_xprim)
 
 
-world_base_tf   = rep_utils.gf_mat_to_np( rep_utils.find_parents_tf(stage.GetPrimAtPath(f"{my_robot_task.prim_path}/world_base") , include_self=True)    )
-robot_tf        = rep_utils.gf_mat_to_np( rep_utils.find_parents_tf(stage.GetPrimAtPath(my_robot.prim_path)))
-robot_rot_tf_inv = np.linalg.inv( np.linalg.inv(world_base_tf).dot(robot_tf) )
+# world_base_tf   = rep_utils.gf_mat_to_np( rep_utils.find_parents_tf(stage.GetPrimAtPath(f"{my_robot_task.prim_path}/world_base") , include_self=True)    )
+# robot_tf        = rep_utils.gf_mat_to_np( rep_utils.find_parents_tf(stage.GetPrimAtPath(my_robot.prim_path)))
+# robot_rot_tf_inv = np.linalg.inv( np.linalg.inv(world_base_tf).dot(robot_tf) )
 
 i = 0
 state = 0
@@ -172,10 +173,10 @@ while simulation_app.is_running():
             if ik_first_flag:
                 target_pos, target_orientation = target_xprim.get_world_pose()
                 target_orientation = mat_utils.quat_to_euler(np.array(target_orientation), degrees=True)
-                target_pos = np.linalg.inv(robot_tf).dot( mat_utils.trans(target_pos) )[:3,-1]
+                # target_pos = np.linalg.inv(robot_tf).dot( mat_utils.trans(target_pos) )[:3,-1]
 
-                target_orientation = np.linalg.inv(robot_tf).dot( mat_utils.rotate(target_orientation) )
-                target_orientation = mat_utils.mat_to_euler(target_orientation, degrees=True)
+                # target_orientation = np.linalg.inv(robot_tf).dot( mat_utils.rotate(target_orientation) )
+                # target_orientation = mat_utils.mat_to_euler(target_orientation, degrees=True)
                 target_joint_positions = my_robot_task.compute_ik_traj(target_position = target_pos,
                                             target_orientation = target_orientation,
                                             frame_name = "OMY_grasp_joint",
