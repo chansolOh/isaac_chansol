@@ -41,6 +41,7 @@ from isaacsim.robot_motion.motion_generation import (
     ArticulationTrajectory
 )
 from isaacsim.core.api import World
+import omni.replicator.core as rep
 
 
 # Inheriting from the base class Follow Target
@@ -126,7 +127,7 @@ class My_Robot_Task(tasks.BaseTask):
             )
 
         else:
-            gripper = ParallelGripper(
+            self.gripper = ParallelGripper(
                 end_effector_prim_path=os.path.join(self.prim_path if self.extra_prim_path is None else self.extra_prim_path, self.ee_link_path),
                 joint_prim_names=self.gripper_joint_prim_names,
                 joint_opened_positions=self.joint_opened_positions,
@@ -138,7 +139,7 @@ class My_Robot_Task(tasks.BaseTask):
                 prim_path=self.prim_path,
                 name=self.name,
                 end_effector_prim_path=os.path.join(self.prim_path if self.extra_prim_path is None else self.extra_prim_path, self.ee_link_path),
-                gripper=gripper,
+                gripper=self.gripper,
                 position = self.robot_pos ,
                 orientation = self.robot_ori ,
                 scale = self.robot_scale ,
@@ -159,6 +160,8 @@ class My_Robot_Task(tasks.BaseTask):
     @property
     def get_robot_name(self):
         return self._robot.name
+    def set_semantic_labels(self):
+        rep.utils._set_semantics_legacy(self.robot_prim, [("class", "robot")])
 
     def set_solver(self):
         kinematics_solver = LulaKinematicsSolver(

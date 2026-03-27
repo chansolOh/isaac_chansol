@@ -40,10 +40,12 @@ my_robot_task = robot_policy.My_Robot_Task(robot_config=Robot_Cfg, name="robot_t
                 )
 my_world.add_task(my_robot_task)
 my_world.reset()
+
 stage = omni.usd.get_context().get_stage()
 robot_name = my_robot_task.get_robot_name
 my_robot = my_robot_task._robot
 my_robot_prim = my_robot_task.robot_prim
+my_robot_task.set_semantic_labels()
 env_prim = add_reference_to_stage(prim_path = "/World/env", usd_path ="/nas/ochansol/isaac/sim2real/uon_vla_demo_robotis_env.usd")
 
 
