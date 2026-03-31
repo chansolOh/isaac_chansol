@@ -462,6 +462,7 @@ def main(output_root_path,
         settings.set("/rtx/pathtracing/totalSpp", 160)
         settings.set("/rtx/pathtracing/maxBounces", 12)
         settings.set("/rtx/pathtracing/maxSpecularAndTransmissionBounces", 12)
+        settings.set("/rtx/ecoMode/maxFramesWithoutChange",500)
 
 
         writer.output_path = os.path.join(output_path,random_condition_name)
