@@ -37,11 +37,22 @@ class VLAClient:
         self._stop_evt = threading.Event()
         self._th = None
 
-    def connect(self):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.sock.connect((self.server_ip, self.port))
-        self.sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-        print(f"[CLIENT] connected {self.server_ip}:{self.port}")
+    def connect(self, retry_forever: bool = False, retry_interval: float = 1.0):
+        while not self._stop_evt.is_set():
+            try:
+                sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                sock.connect((self.server_ip, self.port))
+                sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
+                self.sock = sock
+                print(f"[CLIENT] connected {self.server_ip}:{self.port}")
+                return True
+            except Exception as e:
+                self.close()
+                if not retry_forever:
+                    raise
+                print(f"[CLIENT] connect failed: {e}. retry in {retry_interval:.1f}s")
+                time.sleep(retry_interval)
+        return False
 
     def close(self):
         if self.sock is not None:
@@ -95,7 +106,12 @@ class VLAClient:
         self.action = unpack_float32_array(a_blob, tuple(a_meta["shape"]))  # (A,)
 
         # return action
-    def _infer_loop(self, hz: float = None):
+    def _ensure_connected(self, retry_interval: float = 1.0) -> bool:
+        if self.sock is not None:
+            return True
+        return self.connect(retry_forever=True, retry_interval=retry_interval)
+
+    def _infer_loop(self, hz: float = None, retry_interval: float = 1.0):
         period = (1.0 / hz) if hz else None
         next_t = time.perf_counter()
 
@@ -124,10 +140,14 @@ class VLAClient:
 
             # infer 실행 (결과는 self.action에 저장 + return도 됨)
             try:
+                if not self._ensure_connected(retry_interval=retry_interval):
+                    continue
                 self.infer(images, obs, action_type=action_type)
-            except Exception:
-                # 필요하면 여기서 로그/재연결 처리
-                pass
+            except Exception as e:
+                print(f"[CLIENT] infer failed: {e}. reconnecting...")
+                self.close()
+                time.sleep(retry_interval)
+
     def push(self, images_bgr: Dict[str, np.ndarray], obs: Dict[str, Any], action_type: str = "joint"):
         with self._lock:
             self._latest_images = images_bgr
@@ -135,17 +155,17 @@ class VLAClient:
             self._latest_action_type = action_type
             self._has_new = True
 
-    def start_infer_thread(self, hz: float = None):
+    def start_infer_thread(self, hz: float = None, retry_interval: float = 1.0):
         if self._th is not None and self._th.is_alive():
             return
         self._stop_evt.clear()
-        self._th = threading.Thread(target=self._infer_loop, args=(hz,), daemon=True)
+        self._th = threading.Thread(target=self._infer_loop, args=(hz, retry_interval), daemon=True)
         self._th.start()
 
 
 def main():
     client = VLAClient(SERVER_IP, PORT)
-    client.connect()
+    client.connect(retry_forever=True)
 
     try:
         # 테스트용 이미지/obs

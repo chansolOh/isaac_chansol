@@ -122,18 +122,19 @@ annotator_wrist.attach([render_product_wrist])
 
 obj_root_path = "/nas/ochansol/3d_model/scan_etc"
 sampled_model_dict={
+    "box_magenta":{
+        "name":"box_magenta",
+        "path": "/nas/ochansol/3d_model/VLA/custom_box_12_12_08_magenta/custom_box_12_12_08_magenta.usd",
+        "size_rank": 0,
+        "scale" : [1,1,1],
+        "position": [0.25, -0.015, 0.041],
+    },
     "apple":{
         "name":"apple",
         "path": "/nas/ochansol/3d_model/scan_etc/apple_test/apple.usd",
         "size_rank": 0,
         "scale" : [0.1,0.1,0.1]
     },
-    "box_magenta":{
-        "name":"box_magenta",
-        "path": "/nas/ochansol/3d_model/VLA/custom_box_12_12_08_magenta/custom_box_12_12_08_magenta.usd",
-        "size_rank": 0,
-        "scale" : [1,1,1]
-    }
 }
 
 
@@ -144,7 +145,8 @@ for key in sampled_model_dict:
     scan_obj = scan_rep.Scan_Rep(usd_path =  model_attr["path"],
                             class_name = model_attr["name"],
                             size = model_attr["size_rank"],
-                            scale = model_attr.get("scale", [0.1,0.1,0.1])
+                            scale = model_attr.get("scale", [0.1,0.1,0.1]),
+                            position=model_attr.get("position", [0, 0, 0]),
                             )
     sampled_model_dict[key]["rep"] = scan_obj
     obj_rep_all_list.append(scan_obj)
@@ -190,7 +192,7 @@ platform_scale = csr.find_parents_scale(stage.GetPrimAtPath(platform_path).GetPr
 platform_rep.set_tf(platform_tf)
 platform_rep.set_scale(platform_scale)
 
-csr.scatter_in_platform_area(platform_rep, obj_rep_all_list, fixed_first = False, rotation=False)
+csr.scatter_in_platform_area(platform_rep, obj_rep_all_list, fixed_first = True, rotation=False)
 
 
 
@@ -198,7 +200,6 @@ csr.scatter_in_platform_area(platform_rep, obj_rep_all_list, fixed_first = False
 SERVER_IP = "127.0.0.1"
 PORT = 1823
 client = VLAClient(SERVER_IP, PORT)
-client.connect()
 
 
 description = 'put the apple in the box'
@@ -233,7 +234,7 @@ while simulation_app.is_running():
         record_flag = False
         my_world.reset()
 
-        csr.scatter_in_platform_area(platform_rep, obj_rep_all_list, fixed_first = False, rotation=False)
+        csr.scatter_in_platform_area(platform_rep, obj_rep_all_list, fixed_first = True, rotation=False)
 
 
 

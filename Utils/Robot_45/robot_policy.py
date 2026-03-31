@@ -267,6 +267,11 @@ class My_Robot_Task(tasks.BaseTask):
         rot = mat_utils.mat_to_euler(rot_mat)
         return pos, rot
     
+    def apply_action(self, joint_indices, joint_positions):
+        self._robot.apply_action(ArticulationAction(
+                            joint_indices=joint_indices ,  ####  joint name으로 index 찾아오기
+                            joint_positions = joint_positions))
+        return
 
     
     def get_joint_positions(self):
