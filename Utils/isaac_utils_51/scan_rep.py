@@ -60,7 +60,6 @@ class Scan_Rep(my_rep.rep_usd):
             rep.modify.pose(position=position, rotation=rotation, scale=scale)
         
         self.set_semantic("class",self.class_name )
-
         
         self.meshes = self.find_mesh()
         self.mesh_parent_path = self.meshes[0].GetParent().GetPath().pathString

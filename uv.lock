@@ -525,7 +525,6 @@ dependencies = [
     { name = "jupyter" },
     { name = "numpy" },
     { name = "opencv-python" },
-    { name = "pyk4a" },
     { name = "tqdm" },
 ]
 
@@ -534,7 +533,6 @@ requires-dist = [
     { name = "jupyter", specifier = ">=1.1.1" },
     { name = "numpy", specifier = "==1.26.0" },
     { name = "opencv-python", specifier = ">=4.11.0.86" },
-    { name = "pyk4a", specifier = ">=1.5.0" },
     { name = "tqdm", specifier = ">=4.67.1" },
 ]
 
@@ -1207,15 +1205,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/b0/77/a5b8c569bf593b014
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c7/21/705964c7812476f378728bdf590ca4b771ec72385c533964653c68e86bdc/pygments-2.19.2-py3-none-any.whl", hash = "sha256:86540386c03d588bb81d44bc3928634ff26449851e99741617ecb9037ee5ec0b", size = 1225217, upload-time = "2025-06-21T13:39:07.939Z" },
 ]
-
-[[package]]
-name = "pyk4a"
-version = "1.5.0"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "numpy" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/5a/f9/92c3f43caf0a8ad5ca1414be0096b8e046604a90cabe84f12173794ac130/pyk4a-1.5.0.tar.gz", hash = "sha256:57e1c69a39e936e1610771401ad68f0c9b3788d14c2f4998678854904d3c2d1b", size = 24449, upload-time = "2023-02-03T21:14:33.692Z" }
 
 [[package]]
 name = "python-dateutil"
