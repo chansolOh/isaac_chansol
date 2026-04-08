@@ -63,7 +63,7 @@ class VLAClient:
         self.sock = None
 
 
-    def infer(self, images_bgr: Dict[str, np.ndarray], obs: Dict[str, Any], action_type: str = "joint") -> np.ndarray:
+    def infer(self, images_bgr: Dict[str, np.ndarray], obs: Dict[str, Any], task: str, action_type: str = "joint") -> np.ndarray:
         if self.sock is None:
             raise RuntimeError("not connected")
 
@@ -86,6 +86,7 @@ class VLAClient:
             "req_id": req_id,
             "action_type": action_type,
             "obs": obs,
+            "task": task,
             "image_order": image_order,
             "images": {name: {"length": len(img_bytes_dict[name])} for name in image_order},
         }
@@ -132,6 +133,7 @@ class VLAClient:
                     images = self._latest_images
                     obs = self._latest_obs
                     action_type = self._latest_action_type
+                    task = self._latest_task
                     self._has_new = False
 
             if images is None:
@@ -142,17 +144,18 @@ class VLAClient:
             try:
                 if not self._ensure_connected(retry_interval=retry_interval):
                     continue
-                self.infer(images, obs, action_type=action_type)
+                self.infer(images, obs, task, action_type=action_type)
             except Exception as e:
                 print(f"[CLIENT] infer failed: {e}. reconnecting...")
                 self.close()
                 time.sleep(retry_interval)
 
-    def push(self, images_bgr: Dict[str, np.ndarray], obs: Dict[str, Any], action_type: str = "joint"):
+    def push(self, images_bgr: Dict[str, np.ndarray], obs: Dict[str, Any], task: str, action_type: str = "joint"):
         with self._lock:
             self._latest_images = images_bgr
             self._latest_obs = obs
             self._latest_action_type = action_type
+            self._latest_task = task
             self._has_new = True
 
     def start_infer_thread(self, hz: float = None, retry_interval: float = 1.0):

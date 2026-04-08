@@ -286,7 +286,7 @@ while simulation_app.is_running():
                 "full": full_rgb, 
                 "wrist": wrist_rgb
                 }, 
-
+            task=description,
             obs={
                 "joint_state": state
                 }, 
