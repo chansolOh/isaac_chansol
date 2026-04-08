@@ -121,21 +121,47 @@ annotator_wrist.attach([render_product_wrist])
 
 
 obj_root_path = "/nas/ochansol/3d_model/scan_etc"
-sampled_model_dict={
-    "box_magenta":{
-        "name":"box_magenta",
-        "path": "/nas/ochansol/3d_model/VLA/custom_box_12_12_08_magenta/custom_box_12_12_08_magenta.usd",
-        "size_rank": 0,
-        "scale" : [1,1,1],
-        "position": [0.25, -0.015, 0.041],
-    },
-    "apple":{
-        "name":"apple",
-        "path": "/nas/ochansol/3d_model/scan_etc/apple_test/apple.usd",
-        "size_rank": 0,
-        "scale" : [0.1,0.1,0.1]
-    },
-}
+    sampled_model_dict = {
+        "custom_box_12_12_08_magenta": {
+            "name": "custom_box_12_12_08_magenta",
+            "path": "/nas/ochansol/3d_model/VLA/custom_box_12_12_08_magenta/custom_box_12_12_08_magenta.usd",
+            "size_rank": 0,
+            "scale": [1, 1, 1],
+            "position": [0.25, -0.015, 0.041],
+        },
+        "custom_box_12_12_08_blue": {
+            "name": "custom_box_12_12_08_blue",
+            "path": "/nas/ochansol/3d_model/VLA/custom_box_12_12_08_blue/custom_box_12_12_08_blue.usd",
+            "size_rank": 0,
+            "scale": [1, 1, 1],
+            "position": [0.25, -0.015, 0.041],
+        },
+        "custom_box_12_12_08_yellow": {
+            "name": "custom_box_12_12_08_yellow",
+            "path": "/nas/ochansol/3d_model/VLA/custom_box_12_12_08_yellow/custom_box_12_12_08_yellow.usd",
+            "size_rank": 0,
+            "scale": [1, 1, 1],
+            "position": [0.25, -0.015, 0.041],
+        },
+        "apple": {
+            "name": "apple",
+            "path": "/nas/ochansol/3d_model/scan_etc/apple/edited/apple.usd",
+            "size_rank": 0,
+            "scale": [0.1, 0.1, 0.1],
+        },
+        "paprika": {
+            "name": "paprika",
+            "path": "/nas/ochansol/3d_model/scan_etc/paprika/edited/paprika.usd",
+            "size_rank": 0,
+            "scale": [0.1, 0.1, 0.1],
+        },
+        "potato": {
+            "name": "potato",
+            "path": "/nas/ochansol/3d_model/scan_etc/potato/edited/potato.usd",
+            "size_rank": 0,
+            "scale": [0.1, 0.1, 0.1],
+        },
+    }
 
 
 obj_rep_all_list = []
